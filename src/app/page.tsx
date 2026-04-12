@@ -188,7 +188,15 @@ export default function WeeklyDashboard() {
         <div>
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Rancangan Minggu Ini</h2>
           {loading ? (
-            <p className="text-gray-400 text-sm">Memuatkan...</p>
+            <div className="space-y-3">
+              {[1, 2].map((i) => (
+                <div key={i} className="bg-white rounded-xl border border-gray-200 p-4 animate-pulse">
+                  <div className="h-3 w-24 bg-gray-200 rounded mb-2" />
+                  <div className="h-4 w-48 bg-gray-200 rounded mb-1" />
+                  <div className="h-3 w-64 bg-gray-100 rounded" />
+                </div>
+              ))}
+            </div>
           ) : plans.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-xl border border-gray-200">
               <p className="text-gray-400 mb-3">Tiada rancangan minggu ini.</p>
@@ -206,20 +214,22 @@ export default function WeeklyDashboard() {
 
                 return (
                   <Link key={plan.id} href={`/plan/${plan.date}`}>
-                    <div className="bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-400 transition-colors cursor-pointer">
+                    <div className="bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-300 hover:shadow-md shadow-sm transition-all cursor-pointer">
                       <div className="flex items-start justify-between">
                         <div>
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-xs text-gray-400">{dayName}, {plan.date}</span>
                             {plan.date === today && (
-                              <span className="text-xs bg-black text-white px-2 py-0.5 rounded-full">Hari ini</span>
+                              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">Hari ini</span>
                             )}
                           </div>
                           <h3 className="font-semibold text-gray-900">{plan.subject}</h3>
                           <p className="text-sm text-gray-500 mt-0.5">{plan.objective}</p>
                         </div>
                         <div className="text-right">
-                          <p className={`text-sm font-semibold ${pct === 100 ? "text-green-600" : "text-gray-700"}`}>
+                          <p className={`text-sm font-semibold ${
+                            pct === 100 ? "text-green-600" : pct >= 50 ? "text-amber-500" : "text-gray-400"
+                          }`}>
                             {pct}%
                           </p>
                           <p className="text-xs text-gray-400">{plan.completed}/{plan.total}</p>
