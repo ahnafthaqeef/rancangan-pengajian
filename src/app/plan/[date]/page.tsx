@@ -12,6 +12,7 @@ export default function DayView() {
   const [plans, setPlans] = useState<PlanWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [animatedPct, setAnimatedPct] = useState(0);
 
   const today = new Date().toISOString().split("T")[0];
   const dateObj = new Date(date + "T00:00:00");
@@ -66,6 +67,11 @@ export default function DayView() {
   const doneActivities = plans.reduce((s, p) => s + p.completed, 0);
   const overallPct = totalActivities > 0 ? Math.round((doneActivities / totalActivities) * 100) : 0;
 
+  useEffect(() => {
+    const t = setTimeout(() => setAnimatedPct(overallPct), 50);
+    return () => clearTimeout(t);
+  }, [overallPct]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 px-6 py-4">
@@ -103,8 +109,8 @@ export default function DayView() {
             </div>
             <div className="w-full bg-gray-100 rounded-full h-3">
               <div
-                className={`h-3 rounded-full transition-all ${overallPct === 100 ? "bg-green-500" : "bg-black"}`}
-                style={{ width: `${overallPct}%` }}
+                className={`h-3 rounded-full transition-all duration-700 ${overallPct === 100 ? "bg-green-500" : "bg-black"}`}
+                style={{ width: `${animatedPct}%` }}
               />
             </div>
           </div>
@@ -160,9 +166,11 @@ export default function DayView() {
                       <button key={activity.id}
                         onClick={() => toggleActivity(activity)}
                         disabled={togglingId === activity.id}
-                        className="w-full flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50 transition-colors text-left disabled:opacity-60">
-                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                          activity.done ? "bg-black border-black" : "border-gray-300"
+                        className={`w-full flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50 transition-colors text-left disabled:opacity-60 rounded-lg ${
+                          activity.done ? "border-l-2 border-green-400" : ""
+                        }`}>
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all active:scale-90 ${
+                          activity.done ? "bg-black border-black scale-100" : "border-gray-300"
                         }`}>
                           {activity.done && <span className="text-white text-xs">✓</span>}
                         </div>
