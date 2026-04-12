@@ -109,7 +109,7 @@ function NewPlanForm() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Tarikh</label>
               <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/30"
                 required />
             </div>
 
@@ -117,7 +117,7 @@ function NewPlanForm() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Mata Pelajaran / Topik</label>
               <input type="text" value={subject} onChange={(e) => setSubject(e.target.value)}
                 placeholder="cth. React Hooks, Algoritma Sorting, Excel"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/30"
                 required />
             </div>
 
@@ -126,7 +126,7 @@ function NewPlanForm() {
               <textarea value={objective} onChange={(e) => setObjective(e.target.value)}
                 placeholder="cth. Faham cara useEffect berfungsi dan bila digunakan"
                 rows={2}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black resize-none"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/30 resize-none"
                 required />
             </div>
           </div>
@@ -144,7 +144,7 @@ function NewPlanForm() {
                   <span className="text-xs text-gray-400 w-5 text-center">{i + 1}.</span>
                   <input type="text" value={activity} onChange={(e) => updateActivity(i, e.target.value)}
                     placeholder={`Aktiviti ${i + 1}`}
-                    className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
+                    className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/30" />
                   <button type="button" onClick={() => removeActivity(i)}
                     disabled={activities.length <= 1}
                     className="text-red-400 hover:text-red-600 disabled:opacity-20 text-sm">✕</button>
