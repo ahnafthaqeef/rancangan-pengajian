@@ -8,6 +8,15 @@ import type { PlanWithStats } from "@/types";
 
 const DAYS = ["Ahad", "Isnin", "Selasa", "Rabu", "Khamis", "Jumaat", "Sabtu"];
 
+function SkeletonDay() {
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-3 min-h-[90px] animate-pulse">
+      <div className="h-3 w-8 bg-gray-200 rounded mb-2" />
+      <div className="h-6 w-6 bg-gray-200 rounded" />
+    </div>
+  );
+}
+
 function getWeekDates(anchor: Date): Date[] {
   const monday = new Date(anchor);
   monday.setDate(anchor.getDate() - ((anchor.getDay() + 6) % 7));
@@ -129,48 +138,50 @@ export default function WeeklyDashboard() {
         </div>
 
         {/* Week grid */}
-        <div className="grid grid-cols-7 gap-2 mb-8">
-          {weekDates.map((date, idx) => {
-            const dateStr = toDateStr(date);
-            const isToday = dateStr === today;
-            const dayPlans = plans.filter((p) => p.date === dateStr);
-            const totalActivities = dayPlans.reduce((s, p) => s + p.total, 0);
-            const doneActivities = dayPlans.reduce((s, p) => s + p.completed, 0);
-            const pct = totalActivities > 0 ? Math.round((doneActivities / totalActivities) * 100) : 0;
+        <div className="grid grid-cols-7 gap-2 mb-8 overflow-x-auto">
+          {loading
+            ? Array.from({ length: 7 }).map((_, i) => <SkeletonDay key={i} />)
+            : weekDates.map((date, idx) => {
+                const dateStr = toDateStr(date);
+                const isToday = dateStr === today;
+                const dayPlans = plans.filter((p) => p.date === dateStr);
+                const totalActivities = dayPlans.reduce((s, p) => s + p.total, 0);
+                const doneActivities = dayPlans.reduce((s, p) => s + p.completed, 0);
+                const pct = totalActivities > 0 ? Math.round((doneActivities / totalActivities) * 100) : 0;
 
-            return (
-              <Link key={dateStr} href={`/plan/${dateStr}`}>
-                <div className={`rounded-xl border p-3 cursor-pointer transition-all min-h-[90px] ${
-                  isToday
-                    ? "border-black bg-black text-white"
-                    : "border-gray-200 bg-white hover:border-gray-400"
-                }`}>
-                  <p className={`text-xs font-medium mb-1 ${isToday ? "text-gray-300" : "text-gray-400"}`}>
-                    {DAYS[(idx + 1) % 7]}
-                  </p>
-                  <p className={`text-lg font-bold ${isToday ? "text-white" : "text-gray-900"}`}>
-                    {date.getDate()}
-                  </p>
-                  {dayPlans.length > 0 && (
-                    <div className="mt-2">
-                      <div className={`w-full rounded-full h-1.5 ${isToday ? "bg-gray-700" : "bg-gray-100"}`}>
-                        <div
-                          className={`h-1.5 rounded-full ${isToday ? "bg-white" : "bg-green-500"}`}
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <p className={`text-xs mt-1 ${isToday ? "text-gray-300" : "text-gray-400"}`}>
-                        {doneActivities}/{totalActivities} aktiviti
+                return (
+                  <Link key={dateStr} href={`/plan/${dateStr}`}>
+                    <div className={`rounded-xl border p-3 cursor-pointer transition-all min-h-[90px] min-w-[80px] group ${
+                      isToday
+                        ? "border-black border-l-4 bg-white ring-1 ring-black/10"
+                        : "border-gray-200 bg-white hover:border-gray-400"
+                    }`}>
+                      <p className="text-xs font-medium mb-1 text-gray-400">
+                        {DAYS[(idx + 1) % 7]}
                       </p>
+                      <p className={`text-lg font-bold ${isToday ? "text-black" : "text-gray-900"}`}>
+                        {date.getDate()}
+                      </p>
+                      {dayPlans.length > 0 && (
+                        <div className="mt-2">
+                          <div className="w-full rounded-full h-1.5 bg-gray-100">
+                            <div
+                              className="h-1.5 rounded-full bg-green-500 transition-all duration-700"
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                          <p className="text-xs mt-1 text-gray-400">
+                            {doneActivities}/{totalActivities}
+                          </p>
+                        </div>
+                      )}
+                      {dayPlans.length === 0 && (
+                        <p className="text-xs mt-2 text-gray-300 group-hover:text-gray-400 transition-colors">+</p>
+                      )}
                     </div>
-                  )}
-                  {dayPlans.length === 0 && (
-                    <p className={`text-xs mt-2 ${isToday ? "text-gray-400" : "text-gray-300"}`}>—</p>
-                  )}
-                </div>
-              </Link>
-            );
-          })}
+                  </Link>
+                );
+              })}
         </div>
 
         {/* This week's plans list */}
